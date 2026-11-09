@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arhakstore"
+version = "0.2.0"
+description = "AR-HAK associative memory over dmfstore's exact Reed-Solomon erasure store"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.22"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = [
+    "arhakstore",
+    "arhakstore.store",
+    "arhakstore.mem",
+    "arhakstore.bridge",
+]
+
+[tool.setuptools.package-data]
+"arhakstore.mem" = ["witt_hexads.npy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: heavy brute-force/Gauss-Jordan tests (run explicitly with -m slow)",
+]
+addopts = "-m 'not slow'"
