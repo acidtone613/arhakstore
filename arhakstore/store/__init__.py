@@ -1,6 +1,6 @@
-"""arhakstore.store — dmfstore: self-healing redundant store on the DMF RS tower.
+"""arhakstore.store — self-healing redundant store on GF(2^8).
 
-Profiles (from catalog/README.md "Reed-Solomon Hierarchy"):
+Profiles:
     engine     RS(253, 221, 33)   GF(2^8)   default, survives 32/253 loss
     quadallic  RS(48, 12, 37)     GF(2^8)   deep archive, survives 36/48
     binary     RS(23, 12, 12)     GF(2^8)   toy/demo

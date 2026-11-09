@@ -2,12 +2,14 @@
 """
 attention.py -- Steiner-sparse attention for AR-HAK.
 
-Mirrors RC-343 (Adaptive Hexad Attention Kernel):
-  - 132 hexad signatures in R^46 (RC-343:89-90)
-  - H1: hexad discrimination  (route a query to its nearest hexad)
-  - H3: 23-tick phase gating   (resonant hexads only; ~95.7% FLOPs cut)
-  - H4: cross-hexad bridges    (attention fidelity scales with shared atoms;
-        >=3 shared atoms -> >=0.93 fidelity threshold, RC-343:195-197)
+This module implements a 132-hexad Steiner system (Witt design) over 12 atoms,
+with query routing, phase-gated attention, and shared-atom bridge masks.
+
+- 132 hexad signatures in R^46
+- H1: hexad discrimination  (route a query to its nearest hexad)
+- H3: 23-tick phase gating   (resonant hexads only; ~95.7% FLOPs cut)
+- H4: cross-hexad bridges    (attention fidelity scales with shared atoms;
+      >=3 shared atoms -> >=0.93 fidelity threshold)
 """
 
 import numpy as np
@@ -37,24 +39,23 @@ class SteinerAttention:
 
     # -- routing ---------------------------------------------------------
     def route_5subset(self, five: tuple) -> int:
-        """five -> primary hexad index (RC-343 H2 composition)."""
+        """five -> primary hexad index."""
         return self.five_to_hexad[tuple(sorted(five))]
 
     def route_query(self, sig: np.ndarray) -> int:
-        """46D query signature -> nearest hexad (RC-343 H1 discrimination)."""
+        """46D query signature -> nearest hexad."""
         sig = np.asarray(sig, dtype=float).reshape(-1)
         d = self.hexad_sigs @ normalize(sig)
         return int(np.argmax(d))
 
     # -- masks -----------------------------------------------------------
     def bridge_mask(self, hexad: int, min_shared: int | None = None) -> np.ndarray:
-        """Boolean mask over hexads sharing >= min_shared atoms with `hexad`
-        (RC-343 H4 cross-hexad bridge: shared atoms drive attention fidelity)."""
+        """Boolean mask over hexads sharing >= min_shared atoms with `hexad`."""
         t = self.min_shared if min_shared is None else min_shared
         return self.overlap[hexad] >= t
 
     def resonant(self, tick: int) -> np.ndarray:
-        """Boolean mask over hexads resonant at tick t (RC-343 H3, H6)."""
+        """Boolean mask over hexads resonant at tick t."""
         return (self.mod23 * tick) % 23 == 0
 
     def scoped(self, query: np.ndarray, tick: int | None = None,
@@ -75,7 +76,7 @@ class SteinerAttention:
         """Steiner-sparse attention weights over KV entries.
 
         Returns (weights (M,), active_mask (M,) bool, query_hexad).
-        entries outside the bridge mask get weight 0 (RC-343 H4 sparsity).
+        entries outside the bridge mask get weight 0.
         """
         h, hexad_mask = self.scoped(query, tick, min_shared, gate)
         # entry lives in a bridge hexad iff its hexad is in hexad_mask

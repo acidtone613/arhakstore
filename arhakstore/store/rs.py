@@ -1,11 +1,10 @@
 """Reed-Solomon codes over GF(2^8), systematic form.
 
-Implements the (n, k) RS codes from the DMF corpus Reed-Solomon tower
-(catalog/README.md):
+Implements three RS profiles over GF(2^8):
 
-  Engine     RS(253, 221, 33)  GF(2^8)  k=221  t=16  erasure budget 32
-  Quadallic  RS(48, 12, 37)    GF(2^8)  k=12   t=18  erasure budget 36
-  Binary     RS(23, 12, 12)    GF(2^8)  k=12   t=5   erasure budget 11
+  Engine     RS(253, 221, 33)  k=221  t=16  erasure budget 32
+  Quadallic  RS(48, 12, 37)    k=12   t=18  erasure budget 36
+  Binary     RS(23, 12, 12)    k=12   t=5   erasure budget 11
 
 Design notes (honest limits):
   * Encoding is systematic: the codeword's last k symbols are the message.
@@ -15,9 +14,9 @@ Design notes (honest limits):
       - ERROR + ERASURE correction (`decode_correct`): Berlekamp-Massey +
         Forney. Corrects any pattern with 2*nu + mu <= n - k random symbol
         errors (nu) and declared erasures (mu). This is the full production
-        decoder of the RC-331 unified codec.
+        decoder.
   * The generator polynomial roots are alpha^0..alpha^(r-1) (fcr = 0), so a
-    length-r syndrome vector is r(alpha^i). This matches the RC-331 fields.
+    length-r syndrome vector is r(alpha^i).
   * Generator matrices are cached per (n, k); inverting the k x k survivor
     submatrix is the only O(k^3) step and happens once per restore/heal.
 """

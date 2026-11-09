@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-hologram.py -- 276-slot spectral resonator (RC-349 / RC-352 / RC-353).
+hologram.py -- 276-slot spectral resonator.
 
 The 23 > 276 > 48 chain concretely:
-  23        tick clock / phase structure       (RC-343 attention gating)
-  276       N_SLOTS of the hologram            (RC-349 HOLOGRAM_DIM=276)
-  48        N_SPATIAL atoms of the state space (RC-352/353)
+  23        tick clock / phase structure
+  276       N_SLOTS of the hologram
+  48        N_SPATIAL atoms of the state space
 
-Construction is exactly RC-353:133-136 (Phi_48 = F_276 @ Q with Q from the
+Construction is exactly (Phi_48 = F_276 @ Q with Q from the
 economic QR of a random 276x48 matrix; F_276 the sqrt-normalized DFT).
 
-Decoding (RC-353:222-223): x_hat = Phi_48.H @ H with H = Phi_48 @ x, i.e.
+Decoding: x_hat = Phi_48.H @ H with H = Phi_48 @ x, i.e.
 the resonator's linear inversion is lossless while Gram(I) holds, then the
 topological Z7 repair (repair.groupmate_restore) rebuilds dead atom blocks.
 """
@@ -25,8 +25,7 @@ def dft_matrix(n: int) -> np.ndarray:
 
 
 def build_phi48(n_slots: int = 276, n_atoms: int = 48, seed: int = 353) -> np.ndarray:
-    """Phi_48 (276 x 48): F_276 @ Q over the economic QR of a random matrix
-    (RC-353:133-136). Gram -> I => perfect linear inversion."""
+    """Phi_48 (276 x 48): F_276 @ Q over the economic QR of a random matrix. Gram -> I => perfect linear inversion."""
     rng = np.random.default_rng(seed)
     A = rng.standard_normal((n_slots, n_atoms))
     Q, _ = np.linalg.qr(A, mode='reduced')
@@ -39,12 +38,12 @@ def gram_residual(phi: np.ndarray) -> float:
 
 
 def encode_state(phi: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """Holographic encoding: H = Phi @ x  (RC-353:212, 276-slot map)."""
+    """Holographic encoding: H = Phi @ x."""
     return phi @ x
 
 
 def decode_state(phi: np.ndarray, H: np.ndarray) -> np.ndarray:
-    """Linear recall: x_hat = Phi.H @ H  (RC-353:222-223)."""
+    """Linear recall: x_hat = Phi.H @ H."""
     return phi.conj().T @ H
 
 

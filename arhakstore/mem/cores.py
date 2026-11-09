@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
 cores.py -- [48,12,16] Superbridge codec (doubled extended Golay)
-Mirrors RC-340 (Superbridge Constellation) and RC-342 (Galactic Cluster).
 
-Construction (RC-340:44-98):
+Construction:
     A_adj      icosahedron adjacency  (12x12)
     B_ico      J - A_adj              (Hadamard-style block)
     G_golay    [I_12 | B_ico]         -> [24,12,8] extended Golay
     G_super    [G_golay | G_golay]    -> [48,12,16] Superbridge
 
-Decoding (RC-340:107-116): vectorized nearest-codeword over the full
+Decoding: vectorized nearest-codeword over the full
 4096-codeword look-up table, valid when min distance <= max_dist (t=7).
 """
 
@@ -17,7 +16,7 @@ import numpy as np
 
 
 def build_adjacency() -> np.ndarray:
-    """Icosahedron adjacency matrix A_adj (RC-340:48-58)."""
+    """Icosahedron adjacency matrix A_adj."""
     A = np.zeros((12, 12), dtype=np.uint8)
     for i in range(5):
         A[i, (i + 1) % 5] = 1
@@ -45,7 +44,7 @@ G_SUPER = np.hstack([
 
 
 def enumerate_codewords() -> tuple[np.ndarray, np.ndarray]:
-    """All 4096 codewords + messages (RC-340:67-98). Returns (messages, codewords)."""
+    """All 4096 codewords + messages. Returns (messages, codewords)."""
     messages = np.zeros((4096, 12), dtype=np.uint8)
     codewords = np.zeros((4096, 48), dtype=np.uint8)
     for idx in range(4096):
@@ -76,7 +75,7 @@ def encode(messages: np.ndarray) -> np.ndarray:
 
 
 def decode_nearest(received: np.ndarray, max_dist: int = 7):
-    """Vectorized nearest-codeword decoding (RC-340:107-116).
+    """Vectorized nearest-codeword decoding.
 
     received: (...,48) codeword bits (possibly corrupted).
     Returns (decoded_messages (...,12), valid (...,) bool, dists (...,)).

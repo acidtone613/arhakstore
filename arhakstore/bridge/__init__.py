@@ -1,4 +1,4 @@
-"""arhakstore.bridge — glue between AR-HAK memory semantics and dmfstore storage."""
+"""arhakstore.bridge — glue between AR-HAK memory semantics and the exact erasure store."""
 
 from .archive import AssociativeArchive
 

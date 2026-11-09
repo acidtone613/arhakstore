@@ -1,17 +1,17 @@
-"""Port of AR-HAK's own nine-part verification (tests.py) as pytest.
+"""Port of AR-HAK's own nine-part verification as pytest.
 
-Checks mirror the executed hypotheses of the RC-340/343/349/352/353 cluster:
-  T1  [48,12,16] Superbridge minimum distance >= 16   (RC-340 H1)
-  T2  <=7 corrupted atoms exact decode                 (RC-340 H2, RC-338 H4)
-  T3  Witt hexads cover all 792 5-subsets              (RC-343 construction)
-  T4  Z7 topological mapping, 48 atoms -> 7 groups     (RC-353:83)
-  T5  group-mate entropy restoral beats erasure        (RC-353 T5)
-  T6  Steiner attention bridge: >=3 shared -> high weight (RC-343 H4)
-  T7  23-tick phase gating: FLOPs cut, low fidelity loss (RC-343 H3)
-  T8  276-slot hologram (Phi_48 orthonormal)           (RC-353 T4)
-  T9  MemoryLayer heal restores content/codes          (RC-340 H8 style)
+Checks:
+  T1  [48,12,16] Superbridge minimum distance >= 16
+  T2  <=7 corrupted atoms exact decode
+  T3  Witt hexads cover all 792 5-subsets
+  T4  Z7 topological mapping, 48 atoms -> 7 groups
+  T5  group-mate entropy restoral beats erasure
+  T6  Steiner attention bridge: >=3 shared -> high weight
+  T7  23-tick phase gating: FLOPs cut, low fidelity loss
+  T8  276-slot hologram (Phi_48 orthonormal)
+  T9  MemoryLayer heal restores content/codes
 
-Imported from the upstream `arhak` package; thresholds are preserved as-is.
+Thresholds are preserved from the upstream specification.
 """
 
 import numpy as np

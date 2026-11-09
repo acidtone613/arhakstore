@@ -2,7 +2,7 @@
 """
 layer.py -- MemoryLayer: an LLM memory layer with self-healing shards.
 
-Data model (mirrors RC-353 holographic atom shards):
+Data model (mirrors holographic atom shards):
   values     (M, n_atoms*block)   memory content sharded across 48 atoms.
   codes      (M, 48)              [48,12,16] codewords on the address plane.
   sigs       (M, 46)              normalized content signatures (Steiner keys).
@@ -11,7 +11,7 @@ Data model (mirrors RC-353 holographic atom shards):
 
 Flow:
   write()    project key -> 12-bit address (code) + 46D content signature.
-  lookup()   Steiner-sparse attention read over the bank (RC-343 A-HAK).
+  lookup()   Steiner-sparse attention read over the bank.
   kill()     simulate atom death (zero its value slices).
   heal()     3-level repair: ECC -> Z7 entropy restoral -> re-encode.
 """

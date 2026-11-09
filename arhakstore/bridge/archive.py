@@ -1,10 +1,9 @@
-"""AssociativeArchive — AR-HAK memory semantics over dmfstore's exact erasure store.
+"""AssociativeArchive — AR-HAK memory semantics over an exact erasure store.
 
 The insight this merge exists to prove:
 
   AR-HAK heals a killed atom's *value slices* approximately, as the mean of
-  its Z7 group-mates (RC-353 "duplicate meaningful entropy back into deleted
-  nodes"). That is the right structure for a semantic layer.
+  its Z7 group-mates. That is the right structure for a semantic layer.
 
   dmfstore heals byte-exactly: any killed position of an RS codeword is
   regenerated from the surviving k positions over GF(2^8). No entropy is

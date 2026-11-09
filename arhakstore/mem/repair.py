@@ -2,13 +2,12 @@
 """
 repair.py -- layered self-healing for AR-HAK.
 
-Three-level repair, mirroring the research chain:
-  Level 1 (RC-340 H2 / RC-338): [48,12,16] ECC decode corrects <=7 corrupted
+Three-level repair:
+  Level 1: [48,12,16] ECC decode corrects <=7 corrupted
       atoms per codeword (bit-plane erasure + flips).
-  Level 2 (RC-353 T5): deleted nodes are refilled with MEANINGFUL entropy by
-      averaging their living Z7 topological group-mates
-      (RC-353:229-237: "duplicate entropy back into deleted nodes").
-  Level 3 (RC-342): full codeword recovery by re-encoding the decoded message
+  Level 2: deleted nodes are refilled with MEANINGFUL entropy by
+      averaging their living Z7 topological group-mates.
+  Level 3: full codeword recovery by re-encoding the decoded message
       once enough atoms are healed (erasure-to-recovery).
 
 The `heal` routine never invents content: a deleted value-slice is rebuilt
@@ -34,11 +33,11 @@ class Repair:
         return slice(atom * self.block, (atom + 1) * self.block)
 
     def group_mates(self, atom: int, dead: set[int]) -> list[int]:
-        """Living Z7 group-mates of a dead atom (RC-353:230-231)."""
+        """Living Z7 group-mates of a dead atom."""
         return [m for m in range(self.n_atoms)
                 if self.z7[m] == self.z7[atom] and m not in dead]
 
-    # -- level 1: ECC (RC-340 H2) ---------------------------------------
+    # -- level 1: ECC ---------------------------------------
     def ecc_recover(self, cws: np.ndarray, dead: set[int]):
         """Recover messages + codewords when dead atoms are treated as
         bit-flips (their bits zeroed). Returns corrected codewords.
@@ -52,15 +51,14 @@ class Repair:
         corrected[valid] = encode(msgs[valid])
         return corrected, valid, dists
 
-    # -- level 2: topological entropy restoral (RC-353 T5) --------------
+    # -- level 2: topological entropy restoral --------------
     def groupmate_restore(self, values: np.ndarray, dead: set[int],
                           apply_to_dead_only: bool = True) -> np.ndarray:
         """Refill dead atoms' value-slices as the mean of their living Z7
-        group-mates (RC-353:229-237). This is the research's exact
+        group-mates. This is the research's exact
         'duplicate meaningful entropy back into deleted nodes' step.
 
-        apply_to_dead_only=False also smooths living slices (RC-353 does the
-        resynthesis on all atoms via Phi.H @ H); default keeps repairs local.
+        apply_to_dead_only=False also smooths living slices; default keeps repairs local.
         """
         out = values.copy()
         for atom in sorted(dead):
@@ -76,7 +74,7 @@ class Repair:
             pass
         return out
 
-    # -- level 3: re-encode erased codewords (RC-342 erasure) ------------
+    # -- level 3: re-encode erased codewords ------------
     def reencode(self, cws: np.ndarray, valid: np.ndarray, msgs: np.ndarray) -> np.ndarray:
         """Full codeword recovery by re-encoding decoded messages."""
         out = cws.copy()

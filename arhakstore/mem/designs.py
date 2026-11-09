@@ -2,9 +2,9 @@
 """
 designs.py -- Steiner geometry for AR-HAK.
 
-- 132 hexads over 12 atoms with guaranteed 5-subset coverage (RC-343:35-86).
-- Z7 topological atom map (RC-353:83):  atom_to_z7 = ((s*17+31) % 48) % 7
-- 23-tick phase wheel for resonance gating (RC-343:150-154).
+- 132 hexads over 12 atoms with guaranteed 5-subset coverage.
+- Z7 topological atom map:  atom_to_z7 = ((s*17+31) % 48) % 7
+- 23-tick phase wheel for resonance gating.
 """
 
 import itertools
@@ -25,7 +25,7 @@ def build_hexads() -> tuple[list[tuple], list[set], dict[tuple, int]]:
 
     Uses the true small Witt design S(5,6,12): the 132 hexads are the orbit
     of one block under PSL(2,11) acting on P^1(F_11). Every one of the 792
-    five-subsets is covered exactly once, giving the total RC-343 routing
+    five-subsets is covered exactly once, giving the total routing
     table (any 5-atom query signature maps to a hexad via `five_to_hexad`).
     """
     if not os.path.exists(_HEXAD_DATA):
@@ -34,7 +34,7 @@ def build_hexads() -> tuple[list[tuple], list[set], dict[tuple, int]]:
     hexads = [tuple(int(x) for x in row) for row in arr]
     assert len(hexads) == N_HEXADS
 
-    # Phase-resonant slots (i % 23 == 0, RC-343 gating target) should hold a
+    # Phase-resonant slots (i % 23 == 0, gating target) should hold a
     # maximal-union 6-subset so gated reads cover all 12 atoms evenly.
     target_slots = [i for i in range(N_HEXADS) if i % N_PHASES == 0]
     hexads = _place_resonant(hexads, target_slots)
@@ -51,7 +51,7 @@ def build_hexads() -> tuple[list[tuple], list[set], dict[tuple, int]]:
 def _place_resonant(hexads: list[tuple], target_slots: list[int]) -> list[tuple]:
     """Permute a balanced 6-subset into the resonant slots.
 
-    Phase gating (RC-343 H3) activates only the hexads at i % 23 == 0, so
+    Phase gating activates only the hexads at i % 23 == 0, so
     those hexads must give every atom equal representation (otherwise gated
     reads skew toward over-covered atoms and fidelity drops). We greedily
     pick the 6 hexads whose atom-occurrence counts are most uniform, then
@@ -89,7 +89,7 @@ HEXADS, HEXAD_SETS, FIVE_TO_HEXAD = build_hexads()
 
 
 def atom_to_z7(n_atoms: int = N_ATOMS_48) -> np.ndarray:
-    """Z7 topological group per atom (RC-353:83)."""
+    """Z7 topological group per atom."""
     return np.array([((s * 17 + 31) % 48) % 7 for s in range(n_atoms)])
 
 
@@ -100,7 +100,7 @@ def z7_group_mates(atom: int, n_atoms: int = N_ATOMS_48) -> list[int]:
 
 
 def hexad_mod23(n_hexads: int = N_HEXADS) -> np.ndarray:
-    """Phase class of each hexad (RC-343:150)."""
+    """Phase class of each hexad."""
     return np.array([i % N_PHASES for i in range(n_hexads)])
 
 
@@ -108,7 +108,7 @@ HEXAD_MOD23 = hexad_mod23()
 
 
 def phase_gate(tick: int, include: np.ndarray | None = None) -> np.ndarray:
-    """Boolean mask of resonant hexads at tick t (RC-343:152-154).
+    """Boolean mask of resonant hexads at tick t.
 
     A hexad i is active at tick t when (i mod 23) * t mod 23 == 0.
     """
@@ -122,7 +122,7 @@ def phase_gate_ids(tick: int) -> np.ndarray:
 
 
 def overlap_matrix(hexad_sets: list[set] = None) -> np.ndarray:
-    """(132,132) shared-atom intersection counts (RC-343:267-270)."""
+    """(132,132) shared-atom intersection counts."""
     sets = hexad_sets if hexad_sets is not None else HEXAD_SETS
     n = len(sets)
     overlap = np.zeros((n, n), dtype=int)

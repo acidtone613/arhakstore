@@ -2,14 +2,11 @@
 
 **AR-HAK associative memory over dmfstore's exact Reed–Solomon erasure store.**
 
-A clean merge of two sibling codebases that grew out of the same research
-corpus (the 24D-DMF "truth folder"): *AR-HAK*, an LLM memory layer with
-Steiner/Witt-hexad attention, and *dmfstore*, a byte-exact self-healing
-storage engine built on the corpus's verified Reed–Solomon tower over GF(2^8).
-
-The two sources are unpublished sibling projects; this repository is the only
-place they are bound together, and both are merged without modification
-beyond relativized imports and a bytes-level API.
+*AR-HAK* is an LLM memory layer with Steiner/Witt-hexad attention;
+*dmfstore* is a byte-exact self-healing storage engine built on a
+systematic Reed–Solomon tower over GF(2^8). This repository binds them into
+one system: the semantic layer and the archival layer share the same 48
+atoms, so addressing agrees by construction.
 
 ## Layout
 
@@ -123,5 +120,5 @@ return it bit-identical, and heal exactly.
 - Decoder cap is the honest one: any `2*nu + mu <= r` per chunk decodes
   exactly; anything heavier raises `VaultError`/`DecodeError` and
   `verify --full` reports `file_ok=False` — never silent miscorrection.
-- The memory layer's research provenance (RC-343/RC-353 etc.) is presented as
-  executed hypotheses, consistent with the truth-folder curation.
+- The memory layer's approximate healing is characterized empirically by the
+  test suite; no claim is made that it converges to the original values.

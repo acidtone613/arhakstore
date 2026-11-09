@@ -1,19 +1,19 @@
-"""Vault: self-healing redundant file store built on the DMF RS tower.
+"""Vault: self-healing redundant file store built on Reed-Solomon profiles.
 
-Design (the "something useful + new" pitch):
+Design:
 
   * A blob is fanned out into n shard files with a systematic Reed-Solomon
     code over GF(2^8). Any k of the n shards reconstruct the blob exactly.
-    The default "engine" profile is the corpus's own RS(253, 221, 33):
+    The default "engine" profile is RS(253, 221, 33):
     ~14% overhead buys survival of any 32 lost/corrupt shards of 253.
 
   * Every shard carries a Golay-protected 3-byte header (magic + 12-bit
     index), so a shard self-identifies and self-repairs small header
-    corruption (t = 3) — the memory-addressing motif from OC-RC06.
+    corruption (t = 3).
 
   * `heal()` regenerates lost shards from k surviving neighbors — a
-    deterministic erasure "regeneration" of the OC-RC08/09 cellular-automaton
-    motif: any k live cells rebuild a dead one exactly.
+    deterministic erasure regeneration: any k live shards rebuild a dead one
+    exactly.
 
   * Integrity is a Merkle-ish structure: per-shard BLAKE2b digests in the
     manifest; a corrupt shard is demoted to "lost" and healed from the rest.
@@ -23,7 +23,7 @@ Design (the "something useful + new" pitch):
     surviving shards + whole-shard erasures) is corrected exactly — recovery
     even when a corrupt shard was never flagged.
 
-Honest limits (kept, not hidden):
+Honest limits:
   * Prototype is per-blob (fine to ~100 MB); no streaming yet.
   * Reconstructed data is only ever trusted if it matches the manifest's
     whole-file BLAKE2b digest.

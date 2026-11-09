@@ -1,11 +1,11 @@
-"""Systematic binary Golay code (DMF face-pair 1, cyclic construction).
+"""Systematic binary Golay code (cyclic construction).
 
-The corpus builds the [24,12,8] Golay code and its perfect punctured sibling
-[23,12,7] from the degree-11 generator polynomial
+The [24,12,8] Golay code and its perfect punctured sibling
+[23,12,7] are built from the degree-11 generator polynomial
 
     g(x) = x^11 + x^10 + x^6 + x^5 + x^4 + x^2 + 1   (= 0xC75)
 
-(see README.md "Face Pair 1: Cyclic <-> QR"). This module implements:
+This module implements:
 
   * encode(msg12)  -> 23-bit perfect-Golay codeword (systematic cyclic,
     message occupies positions 11..22, check bits 0..10)

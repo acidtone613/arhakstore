@@ -1,9 +1,7 @@
-"""GF(2^8) polynomial-basis arithmetic for the DMF Reed-Solomon tower.
+"""GF(2^8) polynomial-basis arithmetic for the Reed-Solomon profiles used here.
 
-Matches the field used by the corpus's Reed-Solomon hierarchy
-(catalog/README.md, "Reed-Solomon Hierarchy") - in particular the flagship
-Engine code RS(253, 221, 33) over GF(2^8). Dependency-free reference
-implementation; every symbol is one byte.
+The field matches the engine RS(253, 221, 33) over GF(2^8).
+Dependency-free reference implementation; every symbol is one byte.
 
 Field polynomial: 0x11D = x^8 + x^4 + x^3 + x^2 + 1.
 """
